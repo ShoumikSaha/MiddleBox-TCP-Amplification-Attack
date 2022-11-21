@@ -10,5 +10,7 @@ Step 3: Run the attack (sudo python main.py)
 
 
 Requirements: 
+
 Python 3.9
+
 Scapy 2.4.3
