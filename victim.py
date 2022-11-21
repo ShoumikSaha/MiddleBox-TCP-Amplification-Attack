@@ -1,9 +1,9 @@
 import scapy.all as scapy
 import warnings
-warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore", category=Warning)
 import util
 
-class Victim()
+class Victim():
 
   def __init__(self, victim):
     self.victim = victim
@@ -12,10 +12,10 @@ class Victim()
     received_packet_count = 0
     while True:
         # listen for packets coming to the victim
-        p = scapy.sniff(filter=victim.sniff_filter(), count=0, timeout=3)
+        p = scapy.sniff(filter=self.victim.sniff_filter(), count=0, timeout=1)
     
-        if p != None:
-            print("Victim received packet. PAYLOAD: " + p[0]['RAW'].load)
+        try:
+            print("Victim received packet. PAYLOAD: " + str(p[0]['Raw']))
 
             # the packet came from this actor
             pktSrc = util.Actor.from_packet_source (p)
@@ -26,7 +26,8 @@ class Victim()
                                     flags='R',
                                     payload="VICTIM: I'VE RECEIVED " + str(received_packet_count) + " PACKETS. STOP SENDING!")
 
-
+        except:
+            continue
 
 import config
 

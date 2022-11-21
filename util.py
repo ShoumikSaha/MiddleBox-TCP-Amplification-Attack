@@ -1,9 +1,9 @@
 import scapy.all as scapy
 import warnings
-warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore", category=Warning)
 
 class Actor:
-  def __init__(ip, port):
+  def __init__(self, ip, port):
       self.ip = ip
       self.port = port
 
@@ -22,12 +22,12 @@ class Actor:
 def send_packet(src, dst, flags="", payload=""):
     packet = None
     if flags == "":
-        packet = scapy.IP(src=src.ip, dst=dst.ip) / scapy.TCP(sport=src.port, dport=dst.port) / payload
+        packet = scapy.IP(src=src.ip, dst=dst.ip) / scapy.TCP(sport=src.port, dport=dst.port) / scapy.Raw(load=payload)
     else:
-        packet = scapy.IP(src=src.ip, dst=dst.ip) / scapy.TCP(flags=flags, sport=src.port, dport=dst.port) / payload
+        packet = scapy.IP(src=src.ip, dst=dst.ip) / scapy.TCP(flags=flags, sport=src.port, dport=dst.port) / scapy.Raw(load=payload)
     try:
-        scapy.send(pkt)
+        scapy.send(packet)
     except:
         print(Exception)
-    return pkt
+    return packet
 
