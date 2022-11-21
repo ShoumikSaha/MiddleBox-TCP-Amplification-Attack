@@ -1,16 +1,20 @@
-import scapy.all as scapy
+import util
+
+class Attacker:
+
+    def __init__(self, victim, forbidden):
+        self.victim = victim
+        self.forbidden = forbidden
+  
+    def attack(self):
+        # send a single packet to the forbidden site to trigger the attack
+        packet = util.send_packet(src=self.victim, dst=self.forbidden, 
+                                  payload="ATTACKER: HERE'S THE MIDDLEBOX TRIGGER")
+        print(packet.summary())
 
 
-def build_packet(srcIP, srcPort):
-    return scapy.IP(src=srcIP) / scapy.TCP(sport=srcPort)
+import config
 
-
-
-def send_packet(pkt, dstIP, dstPort):
-    pkt.dst = dstIP
-    pkt.dport = dstPort
-    try:
-        scapy.send(pkt)
-    except:
-        print(Exception)
-    return pkt
+if __name__ == '__main__':
+    attacker = Attacker(victim=config.victim, forbidden=config.forbidden)
+    attacker.attack()

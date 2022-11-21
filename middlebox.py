@@ -2,29 +2,29 @@ import scapy.all as scapy
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-middleBoxIP = '10.104.18.90'
-middleBoxPort = 7000
-forbiddenIP = 'www.twitter.com'
+class Middlebox():
 
-p = scapy.sniff(filter="dst host " + forbiddenIP + " and tcp port 80", count=1)
-print(p.summary())
-print(p[0]['IP'].src)
-srcIP = p[0]['IP'].src
-srcPort = p[0]['TCP'].sport
+  def __init__(self, forbidden):
+    self.forbidden = forbidden
 
-pkt = scapy.IP(src=middleBoxIP, dst=srcIP)/scapy.TCP(flags="SA", sport=middleBoxPort, dport=srcPort)
-scapy.send(pkt)
-print(pkt.summary())
+  def run(self):
+    while True:
+        # listen for packets being sent to the forbidden site
+        p = scapy.sniff(filter=forbidden.sniff_filter(), count=0, timeout=5)
 
-while True:
-    p = scapy.sniff(filter="dst host " + middleBoxIP + " and tcp port " + str(middleBoxPort), count=0, timeout=5)
-    print(p.summary())
-    try:
-        srcIP = p[0]['IP'].src
-        srcPort = p[0]['TCP'].sport
+        if p != None:
+            print("Middlebox sniffed packet. PAYLOAD: " + p[0]['RAW'].load)
 
-        pkt = scapy.IP(src=middleBoxIP, dst=srcIP) / scapy.TCP(flags="SA", dport=srcPort, sport=middleBoxPort)
-        scapy.send(pkt)
-    except:
-        print(Exception)
-        continue
+            # the packet came from this actor
+            pktSrc = util.Actor.from_packet_source (p)
+
+            # send a packet back to the source, "WEBSITE BLOCKED"
+            pkt = util.send_packet (src=forbidden, dst=pktSrc, 
+                                    flags='SA',
+                                    payload="MIDDLEBOX: WEBSITE BLOCKED")
+
+import config
+
+if __name__ == '__main__':
+  middlebox = Middlebox(forbidden=config.forbidden)
+  middlebox.run()
