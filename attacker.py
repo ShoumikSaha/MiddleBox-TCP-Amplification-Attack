@@ -10,6 +10,7 @@ class Attacker:
         # send a single packet to the forbidden site to trigger the attack
         packet = util.send_packet(src=self.victim, dst=self.forbidden, 
                                   payload="ATTACKER: HERE'S THE MIDDLEBOX TRIGGER")
+
         print(packet.summary())
 
 

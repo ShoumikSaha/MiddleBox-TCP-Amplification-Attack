@@ -9,13 +9,14 @@ class Victim():
     self.victim = victim
 
   def run(self):
+    print("Victim is UP!")
     received_packet_count = 0
     while True:
         # listen for packets coming to the victim
         p = scapy.sniff(filter=self.victim.sniff_filter(), count=0, timeout=1)
     
         try:
-            print("Victim received packet. PAYLOAD: " + str(p[0]['Raw']))
+            print("Victim received packet. PAYLOAD: \"" + str(p[0]['Raw'].load.decode('utf-8')) + "\"")
 
             # the packet came from this actor
             pktSrc = util.Actor.from_packet_source (p)
